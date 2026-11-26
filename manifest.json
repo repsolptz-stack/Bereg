@@ -1,0 +1,9 @@
+{
+  "name": "Берег — спокойный ритм и опора",
+  "short_name": "Берег",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#12161A",
+  "theme_color": "#12161A",
+  "description": "Мобильный прототип приложения для трекинга трезвости, работы с тягой и личных опор."
+}
