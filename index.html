@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#12161A" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="manifest" href="manifest.json" />
+<title>Берег — спокойный ритм и опора</title>
+<style>
+  :root {
+    --bg: #12161A;
+    --surface: #191F25;
+    --surface-2: #212932;
+    --ink: #F5F3EE;
+    --ink-2: #A6B0BA;
+    --accent: #7CC6B2;
+    --accent-soft: rgba(124, 198, 178, 0.14);
+    --amber: #E5A952;
+    --amber-soft: rgba(229, 169, 82, 0.16);
+    --line: rgba(245, 243, 238, 0.08);
+    --r-card: 22px;
+    --r-pill: 999px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+  }
+  .shell {
+    width: 100%;
+    max-width: 440px;
+    min-height: 100dvh;
+    padding: 18px 16px 104px;
+    position: relative;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 4px 2px;
+    user-select: none;
+  }
+  .title-wrap h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .title-wrap {
+    max-width: calc(100% - 92px);
+  }
+  .title-wrap p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: var(--ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn-disguise {
+    background: var(--surface);
+    color: var(--ink-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 8px 13px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-2);
+    margin-bottom: 8px;
+  }
+  .counter {
+    font-size: 30px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    margin: 2px 0 12px;
+  }
+  .meter {
+    height: 7px;
+    background: var(--surface-2);
+    border-radius: var(--r-pill);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .meter > div {
+    height: 100%;
+    width: 68%;
+    background: linear-gradient(90deg, var(--accent), #9AD6C5);
+    border-radius: var(--r-pill);
+  }
+  .muted { color: var(--ink-2); font-size: 13px; line-height: 1.45; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag {
+    background: var(--surface-2);
+    color: var(--ink-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 8px 13px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.16s ease;
+  }
+  .tag.on {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+  .cta {
+    width: 100%;
+    min-height: 50px;
+    border-radius: var(--r-pill);
+    border: none;
+    background: var(--accent);
+    color: #0E1513;
+    font-weight: 650;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 14px;
+  }
+  .cta-amber {
+    width: 100%;
+    min-height: 54px;
+    border-radius: var(--r-pill);
+    border: none;
+    background: var(--amber);
+    color: #191206;
+    font-weight: 650;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .cta-ghost {
+    width: 100%;
+    min-height: 44px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    margin: 6px 0 2px;
+  }
+  .ring-wrap {
+    width: 154px;
+    height: 154px;
+    border-radius: 50%;
+    margin: 18px auto;
+    border: 1.5px solid var(--accent);
+    background: var(--accent-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 1s ease;
+  }
+  .ring-wrap.big { transform: scale(1.14); }
+  .ring-wrap.small { transform: scale(0.92); }
+  .row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .row-item:last-child { border-bottom: none; padding-bottom: 0; }
+  input[type="text"] {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 11px 13px;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .tabbar {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 416px;
+    background: rgba(25, 31, 37, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 6px;
+    gap: 2px;
+  }
+  .tabbar button {
+    background: transparent;
+    border: none;
+    color: var(--ink-2);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 8px 4px;
+    border-radius: 18px;
+    cursor: pointer;
+  }
+  .tabbar button.active {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+  .tabbar {
+    align-items: center;
+  }
+  .tabbar button.sos {
+    width: 46px;
+    height: 46px;
+    margin: -10px auto -2px;
+    padding: 0;
+    border-radius: 50%;
+    background: #D94848;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(217, 72, 72, 0.36);
+    border: 2px solid rgba(255, 255, 255, 0.14);
+  }
+  .tabbar button.sos.active {
+    background: #E55353;
+    color: #FFFFFF;
+    transform: scale(1.05);
+  }
+  .view { display: none; }
+  .view.active { display: block; }
+  .cover {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #14181D;
+    color: #ECEAE4;
+    z-index: 100;
+    padding: 28px 20px;
+  }
+  .cover.active { display: block; }
+  .notice {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--accent);
+    padding: 10px 16px;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    z-index: 140;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .notice.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="notice" id="notice">Сохранено</div>
+
+<div class="cover" id="cover">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <strong>Заметки · Сегодня</strong>
+    <button class="btn-disguise" onclick="setCover(false)">Вернуться</button>
+  </div>
+  <div class="card" style="margin-top:24px;">
+    <div class="eyebrow">Список дел</div>
+    <p style="margin:8px 0;">• Зайти в магазин за продуктами</p>
+    <p style="margin:8px 0;">• Проверить расписание на завтра</p>
+    <p style="margin:8px 0;">• Лечь спать пораньше</p>
+  </div>
+</div>
+
+<div class="shell">
+  <div class="header" ondblclick="setCover(true)">
+    <div class="title-wrap">
+      <h1>Берег</h1>
+      <p>Спокойный ритм без давления и стыда</p>
+    </div>
+    <button class="btn-disguise" onclick="setCover(true)">Скрыть</button>
+  </div>
+
+  <section class="view active" id="view-today">
+    <div class="card">
+      <div class="eyebrow">Чистое время</div>
+      <div class="counter" id="clock">14 дн · 06 ч · 22 м</div>
+      <div class="meter"><div></div></div>
+      <div class="muted">14 из 21 дня · сон и нервная система постепенно выравниваются</div>
+      <button class="cta-ghost" onclick="openView('view-stages')">Этапы восстановления (24 ч — 90 дн)</button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Отметка состояния</div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;">
+        <span>Уровень тяги сейчас</span>
+        <strong id="urge-val">3 / 10</strong>
+      </div>
+      <input type="range" min="0" max="10" value="3" id="urge-slider" oninput="document.getElementById('urge-val').innerText = this.value + ' / 10'" />
+
+      <div class="eyebrow" style="margin-top:14px;">Что влияет сейчас</div>
+      <div class="tags" id="triggers">
+        <span class="tag" onclick="pickTag(this)">Усталость</span>
+        <span class="tag" onclick="pickTag(this)">Недосып</span>
+        <span class="tag" onclick="pickTag(this)">Вечер / пятница</span>
+        <span class="tag" onclick="pickTag(this)">Одиночество</span>
+        <span class="tag" onclick="pickTag(this)">Стресс</span>
+      </div>
+
+      <div class="eyebrow" style="margin-top:14px;">Что помогло сегодня</div>
+      <div class="tags" id="supports">
+        <span class="tag" onclick="pickTag(this)">Еда и вода</span>
+        <span class="tag" onclick="pickTag(this)">Прогулка</span>
+        <span class="tag" onclick="pickTag(this)">Дыхание</span>
+        <span class="tag" onclick="pickTag(this)">Разговор</span>
+      </div>
+
+      <button class="cta" onclick="saveEntry()">Сохранить отметку</button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Фокус на сегодня</div>
+      <div class="muted" style="color:var(--ink);">Не обязательно решать всё на годы вперёд за один вечер. Достаточно спокойно прожить ближайшие пару часов, поесть и выдохнуть.</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-sos">
+    <div class="card" style="text-align:center;">
+      <div class="eyebrow" style="color:var(--amber);">Пауза · дыхание 4-4-6</div>
+      <div class="ring-wrap" id="ring">
+        <strong id="phase" style="font-size:17px;">Готово</strong>
+        <span id="sec" class="muted" style="margin-top:4px;">нажми запуск</span>
+      </div>
+      <button class="cta" id="breath-toggle" onclick="toggleBreath()">Запустить дыхание</button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Что сейчас ощущается сильнее всего?</div>
+      <div class="tags">
+        <span class="tag" onclick="pickHalt('Голоден', 'Выпей стакан воды и съешь что-то плотное. Голод и усталость часто маскируются под тягу.')">Голоден</span>
+        <span class="tag" onclick="pickHalt('Устал', 'Сними обувь, приляг на 10 минут без ленты новостей и уведомлений.')">Устал</span>
+        <span class="tag" onclick="pickHalt('Злюсь', 'Сделай 6 медленных выдохов, умойтесь прохладной водой и пройдись пешком.')">Злюсь</span>
+        <span class="tag" onclick="pickHalt('Одиноко', 'Напиши короткое сообщение тому, кому доверяешь, даже без длинных объяснений.')">Одиноко</span>
+      </div>
+      <div id="halt-box" class="muted" style="margin-top:12px;color:var(--ink);">Выбери состояние выше, чтобы получить простой шаг на ближайшие минуты.</div>
+      <button class="cta-amber" onclick="startPause()">Отложить решение на 15 минут</button>
+      <div id="pause-label" class="muted" style="margin-top:10px;text-align:center;"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-stages">
+    <div class="card">
+      <div class="eyebrow">Этапы восстановления</div>
+      <div class="muted" style="margin-bottom:8px;">Мягкие ориентиры без жёстких стандартов.</div>
+      <div class="row-item"><div><strong>24–72 часа</strong><div class="muted">Выход из острого пика и первые часы покоя</div></div><span class="muted">Старт</span></div>
+      <div class="row-item"><div><strong>7 дней</strong><div class="muted">Меньше утреннего напряжения, проще держать режим дня</div></div><span class="muted">7 дн</span></div>
+      <div class="row-item"><div><strong>14–21 день</strong><div class="muted">Сон выравнивается, резкие импульсы встречаются реже</div></div><span style="color:var(--accent);font-size:12px;font-weight:600;">Сейчас</span></div>
+      <div class="row-item"><div><strong>30–90 дней</strong><div class="muted">Закрепляются новые привычки и личные опоры</div></div><span class="muted">Глубина</span></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-log">
+    <div class="card">
+      <div class="eyebrow">Последние отметки</div>
+      <div id="log-list" class="muted">Пока сохранены стартовые данные. Сделай отметку на главном экране.</div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Наблюдение по паттернам</div>
+      <div class="muted" style="color:var(--ink);">Пики напряжения чаще приходятся на вечер и дни недосыпа. Короткая пауза, еда и смена обстановки помогают снизить интенсивность быстрее всего.</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-circle">
+    <div class="card">
+      <div class="eyebrow">Близкий круг</div>
+      <div id="circle-list"></div>
+      <input type="text" id="name-in" placeholder="Имя или роль (например, близкий друг)" />
+      <input type="text" id="phone-in" placeholder="Телефон или мессенджер" />
+      <button class="cta-ghost" onclick="addPerson()">Добавить контакт</button>
+    </div>
+  </section>
+</div>
+
+<nav class="tabbar">
+  <button class="active" onclick="openView('view-today', this)">Сегодня</button>
+  <button onclick="openView('view-stages', this)">Этапы</button>
+  <button class="sos" onclick="openView('view-sos', this)">SOS</button>
+  <button onclick="openView('view-log', this)">Записи</button>
+  <button onclick="openView('view-circle', this)">Круг</button>
+</nav>
+
+<script>
+const data = {
+  entries: JSON.parse(localStorage.getItem('bereg_entries') || '[]'),
+  people: JSON.parse(localStorage.getItem('bereg_people') || '[{"name":"Доверенный контакт","phone":"+7 (900) 000-00-00"}]')
+};
+
+function notify(msg) {
+  const n = document.getElementById('notice');
+  n.innerText = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 1800);
+}
+
+function openView(id, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tabbar button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (id === 'view-log') renderEntries();
+  if (id === 'view-circle') renderPeople();
+}
+
+function setCover(active) {
+  document.getElementById('cover').classList.toggle('active', active);
+}
+
+function pickTag(el) {
+  el.classList.toggle('on');
+}
+
+function saveEntry() {
+  const urge = document.getElementById('urge-slider').value;
+  const triggers = [...document.querySelectorAll('#triggers .tag.on')].map(t => t.innerText);
+  const supports = [...document.querySelectorAll('#supports .tag.on')].map(t => t.innerText);
+  data.entries.unshift({
+    time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+    urge,
+    triggers,
+    supports
+  });
+  localStorage.setItem('bereg_entries', JSON.stringify(data.entries.slice(0, 20)));
+  notify('Отметка сохранена');
+}
+
+function renderEntries() {
+  const box = document.getElementById('log-list');
+  if (!data.entries.length) {
+    box.innerHTML = 'Отметок пока нет — сделай первую на экране «Сегодня».';
+    return;
+  }
+  box.innerHTML = data.entries.map(e => `
+    <div class="row-item">
+      <div>
+        <strong style="color:var(--ink);">Тяга ${e.urge}/10</strong> · ${e.time}
+        <div class="muted">Влияет: ${e.triggers.length ? e.triggers.join(', ') : 'не выбрано'}</div>
+        <div class="muted">Помогло: ${e.supports.length ? e.supports.join(', ') : 'не выбрано'}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function pickHalt(label, text) {
+  document.getElementById('halt-box').innerHTML = `<strong style="color:var(--accent);">${label}:</strong> ${text}`;
+  if (navigator.vibrate) navigator.vibrate(25);
+}
+
+let breathTimer = null;
+function toggleBreath() {
+  const ring = document.getElementById('ring');
+  const phase = document.getElementById('phase');
+  const sec = document.getElementById('sec');
+  const btn = document.getElementById('breath-toggle');
+  if (breathTimer) {
+    clearInterval(breathTimer);
+    breathTimer = null;
+    ring.classList.remove('big', 'small');
+    phase.innerText = 'Пауза';
+    sec.innerText = 'остановлено';
+    btn.innerText = 'Запустить дыхание';
+    return;
+  }
+  btn.innerText = 'Остановить';
+  const cycle = [
+    { name: 'Вдох', len: 4, cls: 'big', vib: 25 },
+    { name: 'Задержка', len: 4, cls: '', vib: 0 },
+    { name: 'Выдох', len: 6, cls: 'small', vib: 20 }
+  ];
+  let idx = 0, rem = cycle[0].len;
+  function step() {
+    const cur = cycle[idx];
+    phase.innerText = cur.name;
+    sec.innerText = rem + ' сек';
+    ring.classList.remove('big', 'small');
+    if (cur.cls) ring.classList.add(cur.cls);
+    if (rem === cur.len && cur.vib && navigator.vibrate) navigator.vibrate(cur.vib);
+    rem--;
+    if (rem < 0) {
+      idx = (idx + 1) % cycle.length;
+      rem = cycle[idx].len;
+    }
+  }
+  step();
+  breathTimer = setInterval(step, 1000);
+}
+
+let pauseInterval = null;
+function startPause() {
+  if (pauseInterval) clearInterval(pauseInterval);
+  let left = 15 * 60;
+  const label = document.getElementById('pause-label');
+  function tick() {
+    const mm = String(Math.floor(left / 60)).padStart(2, '0');
+    const ss = String(left % 60).padStart(2, '0');
+    label.innerText = `Пауза активна: ${mm}:${ss}`;
+    if (left <= 0) {
+      clearInterval(pauseInterval);
+      label.innerText = '15 минут прошли. Как ты сейчас? Можно продлить паузу ещё на 15 минут.';
+    }
+    left--;
+  }
+  tick();
+  pauseInterval = setInterval(tick, 1000);
+}
+
+function renderPeople() {
+  const box = document.getElementById('circle-list');
+  box.innerHTML = data.people.map((p, i) => `
+    <div class="row-item">
+      <div><strong>${p.name}</strong><div class="muted">${p.phone}</div></div>
+      <button class="btn-disguise" onclick="removePerson(${i})">Убрать</button>
+    </div>
+  `).join('');
+}
+
+function addPerson() {
+  const name = document.getElementById('name-in').value.trim();
+  const phone = document.getElementById('phone-in').value.trim();
+  if (!name || !phone) { notify('Укажи имя и контакт'); return; }
+  data.people.push({ name, phone });
+  localStorage.setItem('bereg_people', JSON.stringify(data.people));
+  document.getElementById('name-in').value = '';
+  document.getElementById('phone-in').value = '';
+  renderPeople();
+  notify('Контакт добавлен');
+}
+
+function removePerson(i) {
+  data.people.splice(i, 1);
+  localStorage.setItem('bereg_people', JSON.stringify(data.people));
+  renderPeople();
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
